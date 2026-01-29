@@ -2,6 +2,7 @@ package com.example.aidrawingdiary.controller
 
 import com.example.aidrawingdiary.dto.DiaryDto
 import com.example.aidrawingdiary.dto.DiaryRequest
+import com.example.aidrawingdiary.dto.MessageDto
 import com.example.aidrawingdiary.dto.MessageRequest
 import com.example.aidrawingdiary.service.DiaryMessageService
 import com.example.aidrawingdiary.service.DiaryService
@@ -42,6 +43,14 @@ class DiaryController (
         @RequestBody messageRequest: MessageRequest
     ): Flux<String>{
         val response = diaryMessageService.createMessage(messageRequest)
+        return response
+    }
+
+    @GetMapping("/ai/{diaryId}")
+    fun getDiaryMessages(
+        @PathVariable diaryId: Long
+    ): List<MessageDto>{
+        val response = diaryMessageService.getMessages(diaryId)
         return response
     }
 }

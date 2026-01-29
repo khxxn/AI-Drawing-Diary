@@ -15,7 +15,7 @@ class DiaryMessageEntity (
     val type: String,
     val username: String,
     @Column(columnDefinition = "TEXT")
-    val message: String,
+    val message: String
 
 ){
     constructor(messageRequest: MessageRequest): this(

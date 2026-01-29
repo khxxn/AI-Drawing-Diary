@@ -2,7 +2,6 @@ package com.example.aidrawingdiary.service
 
 import com.example.aidrawingdiary.dto.DiaryDto
 import com.example.aidrawingdiary.dto.DiaryRequest
-import com.example.aidrawingdiary.dto.UserRequest
 import com.example.aidrawingdiary.entity.DiaryEntity
 import com.example.aidrawingdiary.repository.DiaryRepository
 import org.springframework.stereotype.Service

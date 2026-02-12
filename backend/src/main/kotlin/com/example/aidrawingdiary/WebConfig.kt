@@ -12,7 +12,8 @@ class WebConfig {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**") // 모든 URL
-                    .allowedOrigins("*") // 허용할 origin
+                    //.allowedOrigins("*") // 허용할 origin
+                    .allowedOriginPatterns("*")
                     .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true)

@@ -2,10 +2,12 @@ import { useState, type FormEvent } from 'react';
 import styles from './StartPage.module.css';
 import { checkUsername } from '../api/userApi';
 import { useNavigate } from 'react-router-dom';
+import useUser from '../hook/useUser';
 
 function StartPage() {
     const [usernameInput, setUsernameInput] = useState('');
     const navigate = useNavigate();
+    const {setUsername} = useUser();
 
     const handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -26,6 +28,7 @@ function StartPage() {
             }
 
         // todo 로컬 쿠키에 username save.
+            setUsername(usernameInput);
             navigate('/');
         } catch (error) {
             console.error(error);

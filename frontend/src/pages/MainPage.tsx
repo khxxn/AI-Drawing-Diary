@@ -2,8 +2,10 @@ import { useState } from 'react';
 import useUser from '../hook/useUser';
 import styles from './MainPage.module.css';
 import { formatDate } from '../utils/date=util';
+import { useNavigate } from 'react-router-dom';
 
 function MainPage() {
+    const navigate = useNavigate();
     const { username } = useUser();
     const [currentDate, setCurrentData] = useState(new Date())
     // 현재 선택된 달력 월을 기반으로 캘린더 날짜 구하기
@@ -32,6 +34,14 @@ function MainPage() {
 
     const handleNextMonthClick = () => {
         setCurrentData(new Date(year, month + 1, 1));
+    };
+
+    const handleDateClick = (date:Date) => {
+        navigate('/diary', {
+            state: {
+                date
+            }
+        });
     };
 
     return (
@@ -64,7 +74,9 @@ function MainPage() {
                         }
 
                         return (
-                            <div key={item.key} className={`${styles.dateCell} ${todayKey == item.key ? styles.dateCellActive : ''}`}>
+                            <div key={item.key} className={`${styles.dateCell} ${todayKey == item.key ? styles.dateCellActive : ''}`}
+                                onClick={() => handleDateClick(item.date)}
+                                >
                                 {item.date.getDate()}
                             </div>
                         )

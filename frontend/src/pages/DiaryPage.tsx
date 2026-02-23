@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import p5 from "p5";
 //@ts-ignore
 import *as brush from 'p5.brush';
+import Button from "../components/Button";
 
 const EmotionList = ['평온', '우울', '불안', '분노'] as const;
 type Emotion = typeof EmotionList[number];
@@ -122,16 +123,17 @@ function DiaryPage() {
                 <h2 className={styles.title}>
                     오늘의 감정 그리기
                 </h2>
-                <button onClick={() => navigate(-1)}>
+                <Button variant = {'ghost'}onClick={() => navigate(-1)}>
                     X
-                </button>
+                </Button>
             </header>
             <div className={styles.section}>
                 <div className={styles.label}>감정 선택</div>
                 <div className={styles.emotionButtons}>
                     {EmotionList.map(emotion => (
-                        <button key={emotion} style={{ border: emotion === selectedEmotion ? '2px solid #000000' : '' }}
-                            onClick={() => handleEmotionSelect(emotion)}>{emotion}</button>
+                        <Button key={emotion} size={'small'} variant={selectedEmotion === emotion ? 'primary' : 'outline'}
+                            style={{ borderRadius: 99 }}
+                            onClick={() => handleEmotionSelect(emotion)}>{emotion}</Button>
                     ))}
                 </div>
             </div>
@@ -144,8 +146,8 @@ function DiaryPage() {
             <div className={styles.canvasContainer} ref={canvasParentRef} />
 
             <div className={styles.actions}>
-                <button onClick={handleClear} className={styles.actionButton}>지우기</button>
-                <button onClick={handleSave} className={styles.actionButton}>생성하기</button>
+                <Button size={'large'} variant={'secondary'} onClick={handleClear} className={styles.actionButton}>지우기</Button>
+                <Button size={'large'} onClick={handleSave} className={styles.actionButton}>생성하기</Button>
             </div>
         </div>
     )

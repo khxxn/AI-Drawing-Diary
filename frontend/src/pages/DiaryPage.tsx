@@ -5,6 +5,9 @@ import p5 from "p5";
 //@ts-ignore
 import *as brush from 'p5.brush';
 import Button from "../components/Button";
+import { createDiary } from "../api/diaryApi";
+import { formatDate } from "../utils/date=util";
+import useUser from "../hook/useUser";
 
 const EmotionList = ['평온', '우울', '불안', '분노'] as const;
 type Emotion = typeof EmotionList[number];
@@ -44,11 +47,12 @@ const emotionToBrushConfig: Record<Emotion, BrushConfig> = {
 }
 
 function DiaryPage() {
+    const { username } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
     const { date } = location.state;
     const canvasParentRef = useRef<HTMLDivElement | null>(null);
-    const canvasRef = useRef<HTMLDivElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const p5Ref = useRef<p5 | null>(null);
     const [selectedEmotion, setSelectedEmotion] = useState<Emotion>('평온');
     const emotionRef = useRef<Emotion>('평온');
@@ -61,8 +65,34 @@ function DiaryPage() {
         p5Ref.current?.background(bgColorRef.current);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        if (!username || !canvasRef.current) return;
 
+        const canvas = canvasRef.current;
+        const out = document.createElement('canvas');
+        out.width = canvas.width;
+        out.height = canvas.height;
+        const context = out.getContext('2d');
+        if(!context) return;
+
+        context.fillStyle = bgColorRef.current;
+        context.fillRect(0,0,out.width,out.height);
+        context.drawImage(canvas,0,0);
+        
+        // api실행
+        const diary = await createDiary({
+            date: formatDate(date),
+            username
+        });
+        
+        // 챗페이지로 이동
+        navigate('/chat', {
+            replace: true,
+            state: {
+                diaryId:diary.id,
+                initialImage: out.toDataURL('/image/png').split(',').pop()
+            }
+        })
     };
 
     const handleEmotionSelect = (emotion: Emotion) => {
@@ -123,7 +153,7 @@ function DiaryPage() {
                 <h2 className={styles.title}>
                     오늘의 감정 그리기
                 </h2>
-                <Button variant = {'ghost'}onClick={() => navigate(-1)}>
+                <Button variant={'ghost'} onClick={() => navigate(-1)}>
                     X
                 </Button>
             </header>

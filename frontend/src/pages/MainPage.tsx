@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useUser from '../hook/useUser';
 import styles from './MainPage.module.css';
 import { formatDate } from '../utils/date=util';
 import { useNavigate } from 'react-router-dom';
+import { getDiaries } from '../api/diaryApi';
 
 function MainPage() {
     const navigate = useNavigate();
     const { username } = useUser();
-    const [currentDate, setCurrentData] = useState(new Date())
+    const [currentDate, setCurrentData] = useState(new Date());
+    const [diaryMap, setDiaryMap] = useState<Record<string, number>>({});
     // 현재 선택된 달력 월을 기반으로 캘린더 날짜 구하기
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -36,13 +38,36 @@ function MainPage() {
         setCurrentData(new Date(year, month + 1, 1));
     };
 
-    const handleDateClick = (date:Date) => {
-        navigate('/diary', {
-            state: {
-                date
-            }
-        });
+    const handleDateClick = (date: Date, diaryId?: number) => {
+        if (diaryId === undefined) {
+            navigate('/diary', {
+                state: {
+                    date
+                }
+            });
+        } else {
+            navigate('/chat', {
+                state: {
+                    diaryId
+                }
+            });
+        }
     };
+
+    useEffect(() => {
+        if (!username) return;
+
+        (async () => {
+            const diaries = await getDiaries(username);
+            const map: Record<string, number> = {};
+
+            for (const diary of diaries) {
+                map[formatDate(new Date(diary.date))] = diary.id;
+            }
+
+            setDiaryMap(map);
+        })();
+    }, []);
 
     return (
         <div className={styles.root}>
@@ -72,12 +97,14 @@ function MainPage() {
                         if (item == null) {
                             return <div key={index} />;
                         }
+                        const diaryId = diaryMap[item.key];
 
                         return (
                             <div key={item.key} className={`${styles.dateCell} ${todayKey == item.key ? styles.dateCellActive : ''}`}
-                                onClick={() => handleDateClick(item.date)}
-                                >
+                                onClick={() => handleDateClick(item.date, diaryId)}
+                            >
                                 {item.date.getDate()}
+                                {diaryId !== undefined && <div className={styles.diaryDot} />}
                             </div>
                         )
                     })}

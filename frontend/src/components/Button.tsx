@@ -2,7 +2,7 @@ import styles from './Button.module.css'
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
-type ButtonSize = 'small' | 'midium' | 'large';
+type ButtonSize = 'small' | 'medium' | 'large';
 
 
 interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
@@ -16,7 +16,7 @@ interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
 function Button({
     className = '',
     variant = 'primary',
-    size = 'midium',
+    size = 'medium',
     fullWidth = false,
     active = false,
     children,

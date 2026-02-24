@@ -13,7 +13,6 @@ function StartPage() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // validation
         if (!usernameInput.trim()) {
             alert('이름을 입력해주세요.');
             return;
@@ -21,12 +20,15 @@ function StartPage() {
 
         // API
         try {
-            const { status: duplicate } = await checkUsername(usernameInput)
+            // 로그인 데모 구현
+            await checkUsername(usernameInput);
+
+            /* const { status: duplicate } = await checkUsername(usernameInput)
 
             if (duplicate) {
                 alert('이미 해당 이름은 사용 중입니다.');
                 return;
-            }
+            } */
 
             // todo 로컬 쿠키에 username save.
             setUsername(usernameInput);

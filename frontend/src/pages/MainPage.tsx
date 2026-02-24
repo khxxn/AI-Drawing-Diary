@@ -4,10 +4,11 @@ import styles from './MainPage.module.css';
 import { formatDate } from '../utils/date=util';
 import { useNavigate } from 'react-router-dom';
 import { getDiaries } from '../api/diaryApi';
+import Button from '../components/Button';
 
 function MainPage() {
     const navigate = useNavigate();
-    const { username } = useUser();
+    const { username, setUsername } = useUser();
     const [currentDate, setCurrentData] = useState(new Date());
     const [diaryMap, setDiaryMap] = useState<Record<string, number>>({});
     // 현재 선택된 달력 월을 기반으로 캘린더 날짜 구하기
@@ -54,6 +55,13 @@ function MainPage() {
         }
     };
 
+    const handleLogout = () => {
+        if (window.confirm('로그아웃 하시겠습니까?')) {
+            setUsername(''); // 유저 이름 초기화
+            navigate('/start');
+        }
+    };
+
     useEffect(() => {
         if (!username) return;
 
@@ -71,10 +79,15 @@ function MainPage() {
 
     return (
         <div className={styles.root}>
-            <h1 className={styles.greeting}>
-                {username}님 <br />
-                오늘 하루는 어떠셨나요?
-            </h1>
+            <header className={styles.header}>
+                <h1 className={styles.greeting}>
+                    {username}님 <br />
+                    오늘 하루는 어떠셨나요?
+                </h1>
+                <Button variant="outline" size="small" onClick={handleLogout}>
+                    로그아웃
+                </Button>
+            </header>
             <div className={styles.calendarContainer}>
                 <div className={styles.calendarHeader}>
                     <button className={styles.navButton} onClick={handlePrevMonthClick}>

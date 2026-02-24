@@ -116,6 +116,7 @@ function DiaryPage() {
 
                 canvas.parent(canvasParentRef.current);
                 canvasParentRef.current.style.backgroundColor = bgColorRef.current;
+                p.background(bgColorRef.current);
                 canvasRef.current = canvas.elt;
                 brush.instance(p);
                 brush.load();

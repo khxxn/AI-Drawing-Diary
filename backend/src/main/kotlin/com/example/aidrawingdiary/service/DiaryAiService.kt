@@ -46,13 +46,36 @@ class DiaryAiService(
 
                 val messages = mutableListOf<Message>()
 
+                messages.add(org.springframework.ai.chat.messages.SystemMessage(DIARY_SYSTEM_PROMPT))
+
                 history
                     .takeLast(10)
                     .forEach {
                         if (it.username == "AI") {
                             messages.add(AssistantMessage(it.message))
                         } else {
-                            messages.add(UserMessage(it.message))
+                            if (it.type == "IMG") {
+                                // Base64 암호를 다시 '진짜 그림'으로 만들어서 보여주기
+                                val imageBytes = Base64.getDecoder().decode(it.message)
+                                val imageResource = ByteArrayResource(imageBytes)
+
+                                messages.add(
+                                    UserMessage.builder()
+                                        .text("내가 오늘 그린 그림이야.")
+                                        .media(
+                                            listOf(
+                                                Media(
+                                                    MimeTypeUtils.IMAGE_PNG,
+                                                    imageResource
+                                                )
+                                            )
+                                        )
+                                        .build()
+                                )
+                            } else {
+                                // 일반 텍스트는 그대로 전송
+                                messages.add(UserMessage(it.message))
+                            }
                         }
                     }
 
